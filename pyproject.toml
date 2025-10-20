@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
+
+[project]
+name = "codebot"
+version = "0.1.0"
+description = "Automated pipeline to align research paper analyses with repository code."
+authors = [
+    {name = "CodeBot", email = "codebot@example.com"}
+]
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31.0",
+    "pydantic>=2.5.0",
+    "rich>=13.0.0",
+    "tqdm>=4.65.0",
+    "pyyaml>=6.0",
+    "orjson>=3.9.0",
+    "click>=8.1.3",
+    "tenacity>=8.2.2"
+]
+
+[project.optional-dependencies]
+dev = [
+    "python-dotenv>=1.0.0",
+    "pytest>=7.4.0"
+]
+
+[project.urls]
+Homepage = "https://example.com/codebot"
+Source = "https://example.com/codebot/source"
+
+[project.scripts]
+codebot = "codebot.cli:main"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
