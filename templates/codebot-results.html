@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* ----- LIGHT THEME ----- */
+  :root{
+    --bg:#ffffff; --text:#111827; --muted:#4b5563;
+    --line:#e5e7eb; --row:#fafafa; --code-bg:#f8fafc;
+    --match:#166534; --mismatch:#991b1b; --partial:#92400e;
+    --radius:12px;
+    --shadow:0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.04);
+    --font-ui:"Inter","Source Sans 3",Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:Consolas,"Source Code Pro",ui-monospace,SFMono-Regular,Menlo,Monaco,monospace;
+    --fs-12:12px; --fs-14:14px;
+  }
+
+  body{
+    margin:0;
+    background:var(--bg); color:var(--text);
+    font-family:var(--font-ui);
+  }
+
+  .codebot-container{
+    width:min(1200px, 80vw);
+    margin:24px auto;
+    padding:0 8px;
+  }
+
+  .codebot-wrap{
+    background:var(--bg); color:var(--text);
+    border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+
+  .codebot-header{
+    display:flex; align-items:center; gap:12px;
+    padding:14px 16px; border-bottom:1px solid var(--line);
+  }
+  .codebot-logo{
+    width:48px; height:48px; border-radius:8px;
+    background:#2563eb; overflow:hidden;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .codebot-logo img{
+    max-width:150%; max-height:150%;
+    width:150%; height:150%;
+    object-fit:contain; display:block;
+  }
+  .codebot-title{ font-size:18px; font-weight:700; margin:0; }
+
+  /* ----- TABLE ----- */
+  .codebot-table{
+    width:100%;
+    border-collapse:separate; border-spacing:0;
+    table-layout:fixed;
+    font-size:var(--fs-14); line-height:1.4;
+  }
+  .codebot-table thead th{
+    position:sticky; top:0; z-index:1;
+    background:var(--bg); color:var(--muted);
+    font-weight:600; text-align:left;
+    padding:10px 12px; border-bottom:1px solid var(--line);
+  }
+  .codebot-table tbody td{
+    vertical-align:top; padding:12px;
+    border-bottom:1px solid var(--line);
+    word-break:break-word;
+  }
+  .codebot-table tbody tr{
+    border-left:3px solid transparent;
+    transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .codebot-table tbody tr:nth-child(odd){ background:var(--row); }
+
+  /* column sizing */
+  .col-id{ width:64px; }
+  .col-dim{ width:150px; }
+  .col-brief{ width:22%; }
+  .col-manuscript{ width:30%; }
+  .col-code{ width:34%; }
+  .col-file{ width:150px; }
+  .col-lines{ width:64px; text-align:left; }
+  .col-result{ width:96px; }
+  .col-actions{ width:132px; text-align:center; }
+  .codebot-table thead th.col-actions{ text-align:center; }
+
+  /* code + scroll cells */
+  .cell-scroll{
+    max-height:160px; overflow:auto;
+    padding:10px 12px;
+    background:#f3f4f6;
+    border:1px solid var(--line);
+    border-radius:8px;
+  }
+  .code-cell .cell-scroll{
+    padding:0;
+    background:transparent;
+    border:none;
+    max-height:none;
+  }
+  .code-cell pre{
+    margin:0;
+    background:var(--code-bg);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:10px 12px;
+    font-family:var(--font-mono);
+    font-size:var(--fs-12); line-height:1.35;
+    white-space:pre-wrap; word-break:break-word;
+    max-height:160px; overflow:auto;
+  }
+  .file-cell code{ font-family:var(--font-mono); font-size:var(--fs-12); }
+  .file-scroll{
+    max-height:140px; overflow:auto;
+    padding:8px 10px;
+    background:#f3f4f6;
+    border:1px solid var(--line);
+    border-radius:8px;
+  }
+
+  /* badges */
+  .badge{
+    display:inline-flex; align-items:center; gap:8px;
+    font-weight:600; border-radius:999px; padding:4px 10px;
+    border:1px solid var(--line); background:#f3f4f6; white-space:nowrap;
+  }
+  .badge::before{ content:""; width:8px; height:8px; border-radius:999px; display:inline-block; }
+  [data-result="Match"]{ color:var(--match);}       [data-result="Match"]::before{ background:var(--match);}
+  [data-result="Mismatch"]{ color:var(--mismatch);} [data-result="Mismatch"]::before{ background:var(--mismatch);}
+  [data-result="No code found"],[data-result="Partial"]{ color:var(--partial);}
+  [data-result="No code found"]::before,[data-result="Partial"]::before{ background:var(--partial); }
+
+  /* --- Brighter status colors --- */
+  [data-result="Match"]{ color:#047857; }
+  .badge[data-result="Match"]{ background:#ecfdf5; border-color:#a7f3d0; }
+  [data-result="Match"]::before{ background:#10b981; }
+  [data-result="Mismatch"]{ color:#b91c1c; }
+  .badge[data-result="Mismatch"]{ background:#fef2f2; border-color:#fecaca; }
+  [data-result="Mismatch"]::before{ background:#ef4444; }
+  [data-result="No code found"], .badge[data-result="Partial"]{ color:#b45309; }
+  .badge[data-result="No code found"], .badge[data-result="Partial"]{ background:#fffbeb; border-color:#fde68a; }
+  [data-result="No code found"]::before, [data-result="Partial"]::before{ background:#f59e0b; }
+
+  /* Result-tinted rows */
+  .codebot-table tbody tr[data-status="match"]{ background:#ecfdf5; border-left:3px solid #10b981; }
+  .codebot-table tbody tr[data-status="mismatch"]{ background:#fef2f2; border-left:3px solid #ef4444; }
+  .codebot-table tbody tr[data-status="minor"],
+  .codebot-table tbody tr[data-status="no code found"]{ background:#fffbeb; border-left:3px solid #f59e0b; }
+  .codebot-table tbody tr[data-status="unknown"]{ background:var(--row); }
+  .codebot-table tbody tr:has(.badge[data-result="Match"]){ background: color-mix(in oklab, #ecfdf5 70%, #ffffff); border-left:3px solid #10b981; }
+  .codebot-table tbody tr:has(.badge[data-result="Mismatch"]){ background: color-mix(in oklab, #fef2f2 72%, #ffffff); border-left:3px solid #ef4444; }
+  .codebot-table tbody tr:has(.badge[data-result="No code found"]), .codebot-table tbody tr:has(.badge[data-result="Partial"]){ background: color-mix(in oklab, #fffbeb 72%, #ffffff); border-left:3px solid #f59e0b; }
+  .codebot-table tbody tr:hover{ box-shadow: inset 0 0 0 9999px rgba(0,0,0,0.02); }
+
+  /* ----- ACTIONS COLUMN (2x2 grid, centered, inverted) ----- */
+  .row-actions{
+    display:grid;
+    grid-template-columns:repeat(2, 36px);
+    grid-auto-rows:36px;
+    gap:8px;
+    justify-content:center;
+    align-content:center;
+    justify-items:center;
+    margin:0 auto;
+    opacity:.25; transition:opacity .15s ease;
+    white-space:nowrap;
+  }
+  .codebot-table tbody tr:hover .row-actions{ opacity:1; }
+
+  .row-actions .action, .row-actions .action-copy{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:36px; height:36px;
+    border-radius:8px;
+    border:1px solid #0f172a;
+    background:#111827; color:#f8fafc;
+    cursor:pointer; padding:0;
+    box-shadow:0 1px 2px rgba(0,0,0,.18) inset;
+  }
+  .row-actions .action svg, .row-actions .action-copy svg{ width:20px; height:20px; }
+  .row-actions .action:hover, .row-actions .action-copy:hover{
+    background:#1f2937; border-color:#111827; color:#ffffff;
+    box-shadow:0 0 0 1px rgba(255,255,255,.06) inset;
+  }
+  .row-actions .action:focus-visible, .row-actions .action-copy:focus-visible{
+    outline:2px solid #60a5fa; outline-offset:2px;
+  }
+  .row-actions .action-copy.copied{ outline:2px solid #34d399; outline-offset:2px; }
+
+  /* controls */
+  .codebot-controls{
+    display:flex; align-items:center; gap:10px;
+    padding:0 16px 12px; color:var(--muted);
+  }
+  .codebot-controls .hint{ font-size:13px; color:var(--muted); }
+  .load-btn{
+    border:1px solid #0f172a; background:#111827; color:#f8fafc;
+    padding:8px 12px; border-radius:8px; cursor:pointer;
+    font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.18) inset;
+  }
+  .load-btn:hover{ background:#1f2937; }
+  .load-btn:focus-visible{ outline:2px solid #60a5fa; outline-offset:2px; }
+
+  /* ----- SCREENSHOT MODE (denser to fit viewport) ----- */
+  .codebot-container.screenshot{ width:min(1200px, 80vw); margin:10px auto; }
+  .codebot-container.screenshot .codebot-wrap{ box-shadow:none; border-color:#d1d5db; }
+  .codebot-container.screenshot .codebot-header{ padding:8px 10px; }
+  .codebot-container.screenshot .codebot-title{ font-size:15px; }
+  .codebot-container.screenshot .codebot-logo{ width:36px; height:36px; }
+
+  .codebot-container.screenshot .codebot-table{ font-size:12px; line-height:1.25; }
+  .codebot-container.screenshot .codebot-table thead th{ padding:6px 8px; }
+  .codebot-container.screenshot .codebot-table tbody td{ padding:6px 8px; }
+
+  /* keep column priorities in screenshot mode */
+  .codebot-container.screenshot .col-brief{ width:22%; }
+  .codebot-container.screenshot .col-manuscript{ width:30%; }
+  .codebot-container.screenshot .col-code{ width:34%; }
+  .codebot-container.screenshot .col-file{ width:140px; }
+  .codebot-container.screenshot .col-lines{ width:60px; }
+  .codebot-container.screenshot .col-result{ width:90px; }
+  .codebot-container.screenshot .col-actions{ width:128px; }
+
+  .codebot-container.screenshot .cell-scroll{
+    max-height:96px;
+    padding:6px 8px;
+  }
+  .codebot-container.screenshot .code-cell .cell-scroll{
+    padding:0;
+    max-height:none;
+  }
+  .codebot-container.screenshot .file-scroll{
+    max-height:90px;
+    padding:6px 8px;
+  }
+  .codebot-container.screenshot .code-cell pre{
+    font-size:11px;
+    padding:6px 8px;
+    max-height:96px;
+  }
+  .codebot-container.screenshot .badge{
+    padding:2px 6px; font-size:12px;
+  }
+  .codebot-container.screenshot .badge::before{ width:7px; height:7px; }
+
+  /* ultra-tight option if needed: add `tight` alongside `screenshot` */
+  .codebot-container.screenshot.tight .codebot-table{ font-size:11.5px; }
+  .codebot-container.screenshot.tight .codebot-table thead th,
+  .codebot-container.screenshot.tight .codebot-table tbody td{ padding:5px 6px; }
+  .codebot-container.screenshot.tight .cell-scroll{ max-height:84px; }
+  .codebot-container.screenshot.tight .code-cell pre{ max-height:84px; }
+  .codebot-container.screenshot.tight .file-scroll{ max-height:78px; }
+  .codebot-container.screenshot.tight .row-actions{ gap:6px; grid-template-columns:repeat(2, 30px); grid-auto-rows:30px; }
+  .codebot-container.screenshot.tight .row-actions .action,
+  .codebot-container.screenshot.tight .row-actions .action-copy{ width:30px; height:30px; }
+  .codebot-container.screenshot.tight .row-actions svg{ width:16px; height:16px; }
+
+  /* --- Fix Code Lines alignment --- */
+  .col-lines,
+  .codebot-table td:nth-child(7),
+  .codebot-table thead th.col-lines{
+    text-align: left !important;
+  }
+</style>
+</head>
+<body>
+
+<!-- add `screenshot` here when you want the full table to fit the window -->
+<div class="codebot-container screenshot">
+  <div class="codebot-wrap">
+    <div class="codebot-header">
+      <div class="codebot-logo"><img src="logo.png" alt=""></div>
+      <h2 class="codebot-title">CodeBot Comparison Report</h2>
+    </div>
+
+    <div class="codebot-controls">
+      <button class="load-btn" id="load-manual" type="button">Offline mode</button>
+      <span class="hint"></span>
+      <input type="file" id="file-input" accept=".csv,.json" style="display:none">
+    </div>
+
+    <table class="codebot-table" id="codebot-table">
+      <thead>
+        <tr>
+          <th class="col-id">Analysis ID</th>
+          <th class="col-dim">Dimension</th>
+          <th class="col-brief">Brief Description</th>
+          <th class="col-manuscript">Manuscript Content</th>
+          <th class="col-code">Code Content</th>
+          <th class="col-file">Code File</th>
+          <th class="col-lines">Code Lines</th>
+          <th class="col-result">Result</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="codebot-table-body">
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<script>
+  (() => {
+    // Link configuration
+    const REPO_BASE = "https://github.com/opensafely/long-covid-risk-factors-and-prediction";
+    const REPO_BRANCH = "main";
+    const WORKSPACE_BASE = ""; // set to an absolute path if you want VS Code links to open locally
+    const PDF_NAME = "paper.pdf"; // place the paper alongside this HTML
+
+    const tableBody = document.getElementById("codebot-table-body");
+    const manualBtn = document.getElementById("load-manual");
+    const fileInput = document.getElementById("file-input");
+
+    const statusLabel = (status) => {
+      const s = (status || "").trim().toLowerCase();
+      if (s === "match") return "Match";
+      if (s === "minor") return "Minor deviation";
+      if (s === "major" || s === "mismatch") return "Mismatch";
+      if (s === "no code found") return "No code found";
+      return status || "Unknown";
+    };
+
+    const parseLineRange = (val) => {
+      if (!val) return {};
+      const nums = String(val).match(/\d+/g);
+      if (!nums || nums.length === 0) return {};
+      const start = nums[0];
+      const end = nums[1] || nums[0];
+      return { start, end, display: `${start}${end && end !== start ? "–" + end : ""}` };
+    };
+
+    const parseCSV = (text) => {
+      // Minimal CSV parser that respects quotes; returns array of objects keyed by header row.
+      const rows = [];
+      let i = 0;
+      const len = text.length;
+      const fields = [];
+      let field = "";
+      let inQuotes = false;
+      let row = [];
+      const pushField = () => { row.push(field); field = ""; };
+      const pushRow = () => { if (row.length || field) { row.push(field); rows.push(row); } row = []; field = ""; };
+      while (i < len) {
+        const ch = text[i];
+        if (inQuotes) {
+          if (ch === '"' && text[i + 1] === '"') { field += '"'; i += 2; continue; }
+          if (ch === '"') { inQuotes = false; i++; continue; }
+          field += ch; i++; continue;
+        }
+        if (ch === '"') { inQuotes = true; i++; continue; }
+        if (ch === ",") { pushField(); i++; continue; }
+        if (ch === "\n") { pushField(); pushRow(); i++; continue; }
+        if (ch === "\r") { i++; continue; }
+        field += ch; i++;
+      }
+      if (field || row.length) { pushField(); pushRow(); }
+      if (!rows.length) return [];
+      const headers = rows.shift();
+      return rows.filter(r => r.length && r.some(v => v.trim() !== "")).map(r => {
+        const obj = {};
+        headers.forEach((h, idx) => { obj[h] = r[idx] ?? ""; });
+        return obj;
+      });
+    };
+
+    const rowStatus = (status) => {
+      const s = (status || "").trim().toLowerCase();
+      if (s.includes("major") || s.includes("mismatch")) return "mismatch";
+      if (s.includes("minor")) return "minor";
+      if (s.includes("match")) return "match";
+      if (s.includes("no code")) return "no code found";
+      return "unknown";
+    };
+
+    const buildRow = (rec) => {
+      const tr = document.createElement("tr");
+      const esc = (v) => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      const formatContent = (v) => {
+        if (!v) return "N/A";
+        const escaped = esc(v);
+        return escaped.replace(/\[\.\.\.\]/g, "<br>[...]<br>");
+      };
+      const textOrNA = (v) => v ? esc(v) : "N/A";
+      const codeRange = parseLineRange(rec.code_lines);
+      const statusText = statusLabel(rec.match_status);
+      const codeFile = rec.code_file || "";
+      const ghHref = (codeFile && codeRange.start && REPO_BASE && REPO_BRANCH)
+        ? `${REPO_BASE}/blob/${REPO_BRANCH}/${encodeURI(codeFile)}#L${codeRange.start}${codeRange.end ? "-L" + codeRange.end : ""}`
+        : "#";
+      const vscodePath = WORKSPACE_BASE ? `${WORKSPACE_BASE.replace(/\/$/, "")}/${codeFile}` : codeFile;
+      const vscodeHref = (codeFile && codeRange.start)
+        ? `vscode://file/${encodeURI(vscodePath)}:${codeRange.start}`
+        : "#";
+      const pdfSearchSnippet = rec.paper_text ? String(rec.paper_text).slice(0, 120) : "";
+      const pdfHref = pdfSearchSnippet
+        ? `${PDF_NAME}#search=${encodeURIComponent(pdfSearchSnippet)}`
+        : (rec.paper_location ? `${PDF_NAME}#page=${encodeURI(rec.paper_location)}` : "#");
+
+      tr.dataset.status = rowStatus(rec.match_status);
+      tr.innerHTML = `
+        <td class="col-id">${textOrNA(rec.analysis_id)}</td>
+        <td class="col-dim">${textOrNA(rec.dimension)}</td>
+        <td class="col-brief"><div class="cell-scroll">${formatContent(rec.brief_description)}</div></td>
+        <td class="col-manuscript"><div class="cell-scroll">${formatContent(rec.paper_text)}</div></td>
+        <td class="code-cell col-code"><div class="cell-scroll"><pre><code>${formatContent(rec.code_text)}</code></pre></div></td>
+        <td class="file-cell col-file"><div class="file-scroll"><code>${textOrNA(codeFile)}</code></div></td>
+        <td class="col-lines">${codeRange.display ? esc(codeRange.display) : textOrNA(rec.code_lines)}</td>
+        <td class="col-result"><span class="badge" data-result="${esc(statusText)}">${esc(statusText)}</span></td>
+        <td class="col-actions">
+          <div class="row-actions" data-path="${esc(codeFile || "NA")}" data-lines="${esc(rec.code_lines || "NA")}" data-page="${esc(rec.paper_location || "")}">
+            <a class="action action-gh" href="${ghHref}" target="_blank" rel="noopener" title="Open code on GitHub">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h6v2H7v10h10v-4h2v6H5z"/></svg>
+            </a>
+            <a class="action action-code" href="${vscodeHref}" title="Open in VS Code at line ${codeRange.start || ""}">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8.59 16.59 4 12l4.59-4.59L10 8.83 6.83 12 10 15.17l-1.41 1.42zM13.41 16.59 12 15.17 15.17 12 12 8.83l1.41-1.42L20 12l-6.59 4.59z"/></svg>
+            </a>
+            <a class="action action-pdf" href="${pdfHref}" target="_blank" rel="noopener" title="Open manuscript PDF (search snippet)">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2.5L18.5 9H14zM8 13h8v2H8zm0 4h8v2H8zm0-8h4v2H8z"/></svg>
+            </a>
+            <button class="action action-copy" type="button" title="Copy path">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11z"/></svg>
+            </button>
+          </div>
+        </td>
+      `;
+      return tr;
+    };
+
+    const renderRows = (rows) => {
+      if (!rows || !rows.length) {
+        tableBody.innerHTML = '<tr><td colspan="9">No rows to display.</td></tr>';
+        return;
+      }
+      const frag = document.createDocumentFragment();
+      rows.forEach((r) => frag.appendChild(buildRow(r)));
+      tableBody.innerHTML = "";
+      tableBody.appendChild(frag);
+    };
+
+    const loadData = async () => {
+      if (location.protocol === "file:") {
+        tableBody.innerHTML = '<tr><td colspan="9">Opened via file://. Click "Load report file…" above and choose codebot_report.csv or codebot_report.json.</td></tr>';
+        return;
+      }
+
+      const tryFetchAny = async (paths) => {
+        let lastErr;
+        for (const path of paths) {
+          try {
+            const resp = await fetch(path);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            return resp.text();
+          } catch (err) {
+            lastErr = err;
+            console.warn(`Fetch failed for ${path}:`, err);
+          }
+        }
+        throw lastErr || new Error("No paths fetched");
+      };
+
+      const csvPaths = ["codebot_report.csv", "../codebot_report.csv"];
+      const jsonPaths = ["codebot_report.json", "../codebot_report.json"];
+
+      try {
+        const csvText = await tryFetchAny(csvPaths);
+        renderRows(parseCSV(csvText));
+        return;
+      } catch (err) {
+        console.warn("CSV load failed, trying JSON fallback:", err);
+      }
+
+      try {
+        const jsonText = await tryFetchAny(jsonPaths);
+        const data = JSON.parse(jsonText);
+        renderRows(Array.isArray(data) ? data : data.rows || []);
+      } catch (err) {
+        console.error("Failed to load comparison data:", err);
+        tableBody.innerHTML = '<tr><td colspan="9">Failed to load comparison data. If opened directly from disk, click "Load report file…" above to pick the CSV or JSON.</td></tr>';
+      }
+    };
+
+    const loadLocalText = (text, filename = "") => {
+      const lower = filename.toLowerCase();
+      if (lower.endsWith(".json")) {
+        const data = JSON.parse(text);
+        renderRows(Array.isArray(data) ? data : data.rows || []);
+      } else {
+        renderRows(parseCSV(text));
+      }
+    };
+
+    const readLocalFile = (file) => {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          loadLocalText(reader.result, file.name);
+        } catch (err) {
+          console.error("Failed to load local file:", err);
+          tableBody.innerHTML = `<tr><td colspan="9">Failed to load ${file.name}: ${err}</td></tr>`;
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    manualBtn.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", (e) => readLocalFile(e.target.files?.[0]));
+
+    loadData();
+
+    document.addEventListener("click", function (e) {
+      const btn = e.target.closest(".action-copy");
+      if (!btn) return;
+      const row = btn.closest(".row-actions");
+      const path = row?.dataset.path ?? "NA";
+      const lines = row?.dataset.lines ?? "NA";
+      const text = path === "NA" ? "NA" : `${path}:${String(lines).replace("-", "–")}`;
+      navigator.clipboard?.writeText(text);
+      btn.classList.add("copied");
+      setTimeout(() => btn.classList.remove("copied"), 700);
+    });
+  })();
+</script>
+</body>
+</html>

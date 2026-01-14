@@ -22,12 +22,29 @@ def pdf_to_grobid_xml(pdf_path: str | Path, grobid_url: str) -> str:
 
 
 def extract_body_text(xml_content: str) -> str:
+    """
+    Extract body text from TEI XML and preserve page boundaries by inserting markers.
+    Page markers appear as [[PAGE n]] where n is the TEI <pb n="..."> value.
+    """
     namespace = {"tei": "http://www.tei-c.org/ns/1.0"}
     root = ET.fromstring(xml_content)
     body = root.find(".//tei:body", namespace)
-    if body is not None:
-        return "".join(body.itertext()).strip()
-    return "Body tag not found."
+    if body is None:
+        return "Body tag not found."
+
+    parts: list[str] = []
+    for el in body.iter():
+        tag = el.tag.rsplit("}", 1)[-1]  # localname without namespace
+        if tag == "pb":
+            page = el.attrib.get("n") or "?"
+            parts.append(f"\n[[PAGE {page}]]\n")
+        else:
+            if el.text:
+                parts.append(el.text)
+        if el.tail:
+            parts.append(el.tail)
+
+    return "".join(parts).strip()
 
 
 def remove_references(document_text: str) -> str:
@@ -64,4 +81,3 @@ def parse_pdf_with_grobid(
     xml_content = precomputed_xml or pdf_to_grobid_xml(pdf_path, grobid_url)
     body = extract_body_text(xml_content)
     return clean_document_text(body)
-
