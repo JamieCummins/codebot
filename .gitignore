@@ -1,0 +1,12 @@
+# Environment variable files and local secrets
+.env
+.env.*
+*.env
+*.env.*
+.envrc
+
+# Keep non-secret templates tracked
+!.env.example
+!.env.sample
+!.env.template
+!.env.*.example

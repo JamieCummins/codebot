@@ -1,0 +1,189 @@
+/* ----- LIGHT THEME ONLY ----- */
+:root{
+  --bg:#ffffff; --text:#111827; --muted:#4b5563;
+  --line:#e5e7eb; --row:#fafafa; --code-bg:#f8fafc;
+  --match:#166534; --mismatch:#991b1b; --partial:#92400e;
+  --radius:12px;
+  --shadow:0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.04);
+  --font-ui:"Inter","Source Sans 3",Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  --font-mono:Consolas,"Source Code Pro",ui-monospace,SFMono-Regular,Menlo,Monaco,monospace;
+  --fs-12:12px; --fs-14:14px;
+}
+
+/* ----- WRAPPER & HEADER ----- */
+.codebot-container{
+  width:min(1200px, 80vw);
+  margin:24px auto;
+}
+.codebot-wrap{
+  background:var(--bg); color:var(--text);
+  font-family:var(--font-ui);
+  border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); overflow:hidden;
+}
+.codebot-header{
+  display:flex; align-items:center; gap:12px;
+  padding:14px 16px; border-bottom:1px solid var(--line);
+}
+.codebot-logo{
+  width:48px; height:48px; border-radius:8px;
+  background:#2563eb; overflow:hidden;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+.codebot-logo img{
+  max-width:150%; max-height:150%;
+  width:150%; height:150%;
+  object-fit:contain; display:block;
+}
+.codebot-title{ font-size:18px; font-weight:700; margin:0; }
+
+/* ----- TABLE ----- */
+.codebot-table{
+  width:100%;
+  border-collapse:separate; border-spacing:0;
+  table-layout:fixed;
+  font-size:var(--fs-14); line-height:1.4;
+}
+.codebot-table thead th{
+  position:sticky; top:0; z-index:1;
+  background:var(--bg); color:var(--muted);
+  font-weight:600; text-align:left;
+  padding:10px 12px; border-bottom:1px solid var(--line);
+}
+.codebot-table tbody td{
+  vertical-align:top; padding:12px;
+  border-bottom:1px solid var(--line);
+  word-break:break-word;
+}
+.codebot-table tbody tr:nth-child(odd){ background:var(--row); }
+
+/* WIDER Manuscript/Code + NARROWER Lines/Actions */
+.col-id{ width:80px; }
+.col-dim{ width:190px; }
+.col-manuscript{ width:34%; }     /* wider */
+.col-code{ width:36%; }           /* wider */
+.col-file{ width:220px; }
+.col-lines{ width:64px; text-align:right; }  /* narrower + right-align */
+.codebot-table td:nth-child(6){ text-align:right; }
+.col-result{ width:120px; }
+.col-actions{ width:132px; text-align:center; } /* narrower */
+.codebot-table thead th.col-actions{ text-align:center; }
+
+/* code blocks */
+.code-cell pre{
+  margin:0; background:var(--code-bg);
+  border:1px solid var(--line); border-radius:8px;
+  padding:10px 12px; font-family:var(--font-mono);
+  font-size:var(--fs-12); line-height:1.35;
+  white-space:pre-wrap; word-break:break-word;
+  max-height:160px; overflow:auto;
+}
+.file-cell code{ font-family:var(--font-mono); font-size:var(--fs-12); }
+
+/* badges */
+.badge{
+  display:inline-flex; align-items:center; gap:8px;
+  font-weight:600; border-radius:999px; padding:4px 10px;
+  border:1px solid var(--line); background:#f3f4f6; white-space:nowrap;
+}
+.badge::before{ content:""; width:8px; height:8px; border-radius:999px; display:inline-block; }
+[data-result="Match"]{ color:var(--match);}       [data-result="Match"]::before{ background:var(--match);}
+[data-result="Mismatch"]{ color:var(--mismatch);} [data-result="Mismatch"]::before{ background:var(--mismatch);}
+[data-result="No code found"],[data-result="Partial"]{ color:var(--partial);}
+[data-result="No code found"]::before,[data-result="Partial"]::before{ background:var(--partial); }
+
+/* ----- SCREENSHOT MODE (denser to fit viewport) ----- */
+.codebot-container.screenshot{ width:min(1200px, 80vw); margin:10px auto; }
+.codebot-container.screenshot .codebot-wrap{ box-shadow:none; border-color:#d1d5db; }
+.codebot-container.screenshot .codebot-header{ padding:8px 10px; }
+.codebot-container.screenshot .codebot-title{ font-size:15px; }
+.codebot-container.screenshot .codebot-logo{ width:36px; height:36px; }
+
+.codebot-container.screenshot .codebot-table{ font-size:12px; line-height:1.25; }
+.codebot-container.screenshot .codebot-table thead th{ padding:6px 8px; }
+.codebot-container.screenshot .codebot-table tbody td{ padding:6px 8px; }
+
+/* keep column priorities in screenshot mode */
+.codebot-container.screenshot .col-manuscript{ width:34%; }
+.codebot-container.screenshot .col-code{ width:36%; }
+.codebot-container.screenshot .col-lines{ width:60px; }
+.codebot-container.screenshot .col-actions{ width:128px; }
+
+.codebot-container.screenshot .code-cell pre{
+  font-size:11px; padding:6px 8px; max-height:96px;
+}
+.codebot-container.screenshot .badge{
+  padding:2px 6px; font-size:12px;
+}
+.codebot-container.screenshot .badge::before{ width:7px; height:7px; }
+
+/* ultra-tight option if needed: add `tight` alongside `screenshot` */
+.codebot-container.screenshot.tight .codebot-table{ font-size:11.5px; }
+.codebot-container.screenshot.tight .codebot-table thead th,
+.codebot-container.screenshot.tight .codebot-table tbody td{ padding:5px 6px; }
+.codebot-container.screenshot.tight .code-cell pre{ font-size:10.5px; max-height:84px; }
+.codebot-container.screenshot.tight .row-actions{ gap:6px; grid-template-columns:repeat(2, 30px); grid-auto-rows:30px; }
+.codebot-container.screenshot.tight .row-actions .action,
+.codebot-container.screenshot.tight .row-actions .action-copy{ width:30px; height:30px; }
+.codebot-container.screenshot.tight .row-actions svg{ width:16px; height:16px; }
+
+/* --- Brighter status colors --- */
+[data-result="Match"]{ color:#047857; }
+.badge[data-result="Match"]{ background:#ecfdf5; border-color:#a7f3d0; }
+[data-result="Match"]::before{ background:#10b981; }
+[data-result="Mismatch"]{ color:#b91c1c; }
+.badge[data-result="Mismatch"]{ background:#fef2f2; border-color:#fecaca; }
+[data-result="Mismatch"]::before{ background:#ef4444; }
+[data-result="No code found"], .badge[data-result="Partial"]{ color:#b45309; }
+.badge[data-result="No code found"], .badge[data-result="Partial"]{ background:#fffbeb; border-color:#fde68a; }
+[data-result="No code found"]::before, [data-result="Partial"]::before{ background:#f59e0b; }
+
+/* Result-tinted rows */
+.codebot-table tbody tr{ transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease; }
+.codebot-table tbody tr:has(.badge[data-result="Match"]){ background: color-mix(in oklab, #ecfdf5 70%, #ffffff); border-left:3px solid #10b981; }
+.codebot-table tbody tr:has(.badge[data-result="Mismatch"]){ background: color-mix(in oklab, #fef2f2 72%, #ffffff); border-left:3px solid #ef4444; }
+.codebot-table tbody tr:has(.badge[data-result="No code found"]), .codebot-table tbody tr:has(.badge[data-result="Partial"]){ background: color-mix(in oklab, #fffbeb 72%, #ffffff); border-left:3px solid #f59e0b; }
+.codebot-table tbody tr:nth-child(odd){ background:var(--row); }
+.codebot-table tbody tr:hover{ box-shadow: inset 0 0 0 9999px rgba(0,0,0,0.02); }
+.code-cell pre{ background:var(--code-bg); }
+
+/* ---- ACTIONS COLUMN (2x2 grid, centered, inverted) ---- */
+.row-actions{
+  display:grid;
+  grid-template-columns:repeat(2, 36px);
+  grid-auto-rows:36px;
+  gap:8px;
+  justify-content:center;
+  align-content:center;
+  justify-items:center;
+  margin:0 auto;
+  opacity:.25; transition:opacity .15s ease;
+  white-space:nowrap;
+}
+.codebot-table tbody tr:hover .row-actions{ opacity:1; }
+
+.row-actions .action, .row-actions .action-copy{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:36px; height:36px;
+  border-radius:8px;
+  border:1px solid #0f172a;
+  background:#111827; color:#f8fafc;
+  cursor:pointer; padding:0;
+  box-shadow:0 1px 2px rgba(0,0,0,.18) inset;
+}
+.row-actions .action svg, .row-actions .action-copy svg{ width:20px; height:20px; }
+.row-actions .action:hover, .row-actions .action-copy:hover{
+  background:#1f2937; border-color:#111827; color:#ffffff;
+  box-shadow:0 0 0 1px rgba(255,255,255,.06) inset;
+}
+.row-actions .action:focus-visible, .row-actions .action-copy:focus-visible{
+  outline:2px solid #60a5fa; outline-offset:2px;
+}
+.row-actions .action-copy.copied{ outline:2px solid #34d399; outline-offset:2px; }
+
+/* --- Fix Code Lines alignment --- */
+.col-lines,
+.codebot-table td:nth-child(6),
+.codebot-table thead th.col-lines{
+  text-align: left !important;
+}

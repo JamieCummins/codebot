@@ -266,7 +266,7 @@
 </head>
 <body>
 
-<!-- add `screenshot` here when you want the full table to fit the window -->
+<!-- add `screenshot` here for full table to fit the window -->
 <div class="codebot-container screenshot">
   <div class="codebot-wrap">
     <div class="codebot-header">
@@ -306,8 +306,8 @@
     // Link configuration
     const REPO_BASE = "https://github.com/opensafely/long-covid-risk-factors-and-prediction";
     const REPO_BRANCH = "main";
-    const WORKSPACE_BASE = ""; // set to an absolute path if you want VS Code links to open locally
-    const PDF_NAME = "paper.pdf"; // place the paper alongside this HTML
+    const WORKSPACE_BASE = ""; // set to absolute path to get VS Code links to open locally
+    const PDF_NAME = "paper.pdf"; // to-do: make this more dynamic
 
     const tableBody = document.getElementById("codebot-table-body");
     const manualBtn = document.getElementById("load-manual");
@@ -324,15 +324,15 @@
 
     const parseLineRange = (val) => {
       if (!val) return {};
-      const nums = String(val).match(/\d+/g);
-      if (!nums || nums.length === 0) return {};
-      const start = nums[0];
-      const end = nums[1] || nums[0];
+      const m = String(val).trim().match(/^(\d+)(?:\s*[-–:]\s*(\d+))?$/);
+      if (!m) return {};
+      const start = m[1];
+      const end = m[2] || m[1];
       return { start, end, display: `${start}${end && end !== start ? "–" + end : ""}` };
     };
 
     const parseCSV = (text) => {
-      // Minimal CSV parser that respects quotes; returns array of objects keyed by header row.
+      // Minimal CSV parser that respects quotes; returns array of objects keyed by header row
       const rows = [];
       let i = 0;
       const len = text.length;

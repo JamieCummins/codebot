@@ -1,0 +1,161 @@
+<link rel="stylesheet" href="styles.css">
+
+<!-- add `screenshot` here when you want the full table to fit the window -->
+<div class="codebot-container screenshot">
+  <div class="codebot-wrap">
+    <div class="codebot-header">
+      <div class="codebot-logo"><img src="logo.png" alt=""></div>
+      <h2 class="codebot-title">CodeBot Comparison Report</h2>
+    </div>
+
+    <table class="codebot-table" id="codebot-table">
+      <thead>
+        <tr>
+          <th class="col-id">Analysis ID</th>
+          <th class="col-dim">Dimension</th>
+          <th class="col-manuscript">Manuscript Content</th>
+          <th class="col-code">Code Content</th>
+          <th class="col-file">Code File</th>
+          <th class="col-lines">Code Lines</th>
+          <th class="col-result">Result</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- A1 / Variable specification -->
+        <tr>
+          <td>A1</td>
+          <td>Variable specification</td>
+          <td>“We examined whether scores on the anxiety scale predicted stress scores”</td>
+          <td class="code-cell"><pre><code>lm(
+  anxiety_score ~ stress_level, data = df
+)</code></pre></td>
+          <td class="file-cell"><code>project/03_analysis.Rmd</code></td>
+          <td>42–43</td>
+          <td><span class="badge" data-result="Mismatch">Mismatch</span></td>
+          <td class="row-actions" data-path="project/03_analysis.Rmd" data-lines="42-43" data-page="3">
+            <a class="action action-gh" href="project/03_analysis.Rmd#L42-L43" target="_blank" rel="noopener" title="Open code (file & lines)">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h6v2H7v10h10v-4h2v6H5z"/></svg>
+            </a>
+            <a class="action action-code" href="vscode://file/${workspace}/project/03_analysis.Rmd:42" title="Open in VS Code at line 42">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8.59 16.59 4 12l4.59-4.59L10 8.83 6.83 12 10 15.17l-1.41 1.42zM13.41 16.59 12 15.17 15.17 12 12 8.83l1.41-1.42L20 12l-6.59 4.59z"/></svg>
+            </a>
+            <a class="action action-pdf" href="paper.pdf#page=3" target="_blank" rel="noopener" title="Open manuscript PDF">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2.5L18.5 9H14zM8 13h8v2H8zm0 4h8v2H8zm0-8h4v2H8z"/></svg>
+            </a>
+            <button class="action action-copy" type="button" title="Copy path">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11z"/></svg>
+            </button>
+          </td>
+        </tr>
+
+        <!-- A1 / Model specification -->
+        <tr>
+          <td>A1</td>
+          <td>Model specification</td>
+          <td>“…using a linear regression analysis”</td>
+          <td class="code-cell"><pre><code>lm(
+  anxiety_score ~ stress_level, data = df
+)</code></pre></td>
+          <td class="file-cell"><code>project/03_analysis.Rmd</code></td>
+          <td>42–43</td>
+          <td><span class="badge" data-result="Match">Match</span></td>
+          <td class="row-actions" data-path="project/03_analysis.Rmd" data-lines="42-43" data-page="3">
+            <a class="action action-gh" href="project/03_analysis.Rmd#L42-L43" target="_blank" rel="noopener" title="Open code (file & lines)"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h6v2H7v10h10v-4h2v6H5z"/></svg></a>
+            <a class="action action-code" href="vscode://file/${workspace}/project/03_analysis.Rmd:42" title="Open in VS Code at line 42"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M8.59 16.59 4 12l4.59-4.59L10 8.83 6.83 12 10 15.17l-1.41 1.42zM13.41 16.59 12 15.17 15.17 12 12 8.83l1.41-1.42L20 12l-6.59 4.59z"/></svg></a>
+            <a class="action action-pdf" href="paper.pdf#page=3" target="_blank" rel="noopener" title="Open manuscript PDF"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2.5L18.5 9H14zM8 13h8v2H8zm0 4h8v2H8zm0-8h4v2H8z"/></svg></a>
+            <button class="action action-copy" type="button" title="Copy path"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11z"/></svg></button>
+          </td>
+        </tr>
+
+        <!-- A1 / Transformation -->
+        <tr>
+          <td>A1</td>
+          <td>Transformation</td>
+          <td>“Our predictions were based on the mean scores for both scales”</td>
+          <td class="code-cell"><pre><code>df &lt;- df |&gt; mutate(
+  stress_level  = rowMeans(across(starts_with("stress_")), na.rm = TRUE),
+  anxiety_score = rowMeans(across(starts_with("anx_")),    na.rm = TRUE)
+)</code></pre></td>
+          <td class="file-cell"><code>project/02_processing.Rmd</code></td>
+          <td>145–147</td>
+          <td><span class="badge" data-result="Match">Match</span></td>
+          <td class="row-actions" data-path="project/02_processing.Rmd" data-lines="145-147" data-page="4">
+            <a class="action action-gh" href="project/02_processing.Rmd#L145-L147" target="_blank" rel="noopener" title="Open code (file & lines)"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h6v2H7v10h10v-4h2v6H5z"/></svg></a>
+            <a class="action action-code" href="vscode://file/${workspace}/project/02_processing.Rmd:145" title="Open in VS Code at line 145"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M8.59 16.59 4 12l4.59-4.59L10 8.83 6.83 12 10 15.17l-1.41 1.42zM13.41 16.59 12 15.17 15.17 12 12 8.83l1.41-1.42L20 12l-6.59 4.59z"/></svg></a>
+            <a class="action action-pdf" href="paper.pdf#page=4" target="_blank" rel="noopener" title="Open manuscript PDF"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2.5L18.5 9H14zM8 13h8v2H8zm0 4h8v2H8zm0-8h4v2H8z"/></svg></a>
+            <button class="action action-copy" type="button" title="Copy path"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11z"/></svg></button>
+          </td>
+        </tr>
+
+        <!-- A1 / Inference criteria -->
+        <tr>
+          <td>A1</td>
+          <td>Inference criteria</td>
+          <td>“with an alpha level of 0.05”</td>
+          <td><em>No specification in code found</em></td>
+          <td>NA</td>
+          <td>NA</td>
+          <td><span class="badge" data-result="No code found">No code found</span></td>
+          <td class="row-actions" data-path="NA" data-lines="NA" data-page="5">
+            <a class="action action-pdf" href="paper.pdf#page=5" target="_blank" rel="noopener" title="Open manuscript PDF"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2.5L18.5 9H14zM8 13h8v2H8zm0 4h8v2H8zm0-8h4v2H8z"/></svg></a>
+            <button class="action action-copy" type="button" title="Copy path"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11z"/></svg></button>
+          </td>
+        </tr>
+
+        <!-- A2 / Variable specification -->
+        <tr>
+          <td>A2</td>
+          <td>Variable specification</td>
+          <td>“We next examined whether there were gender differences between men and women in terms of stress”</td>
+          <td class="code-cell"><pre><code>t.test(
+  anxiety_score ~ gender, data = df
+)</code></pre></td>
+          <td class="file-cell"><code>project/03_analysis.Rmd</code></td>
+          <td>56–57</td>
+          <td><span class="badge" data-result="Match">Match</span></td>
+          <td class="row-actions" data-path="project/03_analysis.Rmd" data-lines="56-57" data-page="6">
+            <a class="action action-gh" href="project/03_analysis.Rmd#L56-L57" target="_blank" rel="noopener" title="Open code (file & lines)"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h6v2H7v10h10v-4h2v6H5z"/></svg></a>
+            <a class="action action-code" href="vscode://file/${workspace}/project/03_analysis.Rmd:56" title="Open in VS Code at line 56"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M8.59 16.59 4 12l4.59-4.59L10 8.83 6.83 12 10 15.17l-1.41 1.42zM13.41 16.59 12 15.17 15.17 12 12 8.83l1.41-1.42L20 12l-6.59 4.59z"/></svg></a>
+            <a class="action action-pdf" href="paper.pdf#page=6" target="_blank" rel="noopener" title="Open manuscript PDF"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2.5L18.5 9H14zM8 13h8v2H8zm0 4h8v2H8zm0-8h4v2H8z"/></svg></a>
+            <button class="action action-copy" type="button" title="Copy path"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11z"/></svg></button>
+          </td>
+        </tr>
+
+        <!-- A2 / Model specification -->
+        <tr>
+          <td>A2</td>
+          <td>Model specification</td>
+          <td>“…using a between-subjects t-test”</td>
+          <td class="code-cell"><pre><code>t.test(
+  anxiety_score ~ gender, data = df
+)</code></pre></td>
+          <td class="file-cell"><code>project/03_analysis.Rmd</code></td>
+          <td>56–57</td>
+          <td><span class="badge" data-result="Match">Match</span></td>
+          <td class="row-actions" data-path="project/03_analysis.Rmd" data-lines="56-57" data-page="6">
+            <a class="action action-gh" href="project/03_analysis.Rmd#L56-L57" target="_blank" rel="noopener" title="Open code (file & lines)"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h6v2H7v10h10v-4h2v6H5z"/></svg></a>
+            <a class="action action-code" href="vscode://file/${workspace}/project/03_analysis.Rmd:56" title="Open in VS Code at line 56"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M8.59 16.59 4 12l4.59-4.59L10 8.83 6.83 12 10 15.17l-1.41 1.42zM13.41 16.59 12 15.17 15.17 12 12 8.83l1.41-1.42L20 12l-6.59 4.59z"/></svg></a>
+            <a class="action action-pdf" href="paper.pdf#page=6" target="_blank" rel="noopener" title="Open manuscript PDF"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2.5L18.5 9H14zM8 13h8v2H8zm0 4h8v2H8zm0-8h4 v2H8z"/></svg></a>
+            <button class="action action-copy" type="button" title="Copy path"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11z"/></svg></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('.action-copy');
+    if(!btn) return;
+    const row = btn.closest('.row-actions');
+    const path = row?.dataset.path ?? 'NA';
+    const lines = row?.dataset.lines ?? 'NA';
+    const text = (path === 'NA') ? 'NA' : `${path}:${lines.replace('-', '–')}`;
+    navigator.clipboard?.writeText(text);
+    btn.classList.add('copied');
+    setTimeout(()=>btn.classList.remove('copied'), 700);
+  });
+</script>
